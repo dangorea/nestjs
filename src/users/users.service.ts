@@ -1,49 +1,52 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-	constructor(@InjectRepository(User) private repo: Repository<User>) {
-	}
+  constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-	create(email: string, password: string) {
-		const user = this.repo.create({ email, password })
+  create(email: string, password: string) {
+    const user = this.repo.create({ email, password });
 
-		return this.repo.save(user);
-	}
+    return this.repo.save(user);
+  }
 
-	findOne(id: number) {
-		if (!id) {
-			return null;
-		}
-		
-		return this.repo.findOne(id);
-	}
+  findOne(id: number) {
+    if (!id) {
+      return null;
+    }
 
-	find(email: string) {
-		return this.repo.find({ email })
-	}
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.repo.findOne({ where: { id } });
+  }
 
-	async update(id: number, attrs: Partial<User>) {
-		const user = await this.findOne(id);
+  find(email: string) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.repo.find({ where: { email } });
+  }
 
-		if (!user) {
-			throw new Error("User not found");
-		}
+  async update(id: number, attrs: Partial<User>) {
+    const user = await this.findOne(id);
 
-		Object.assign(user, attrs);
-		return this.repo.save(user);
-	}
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-	async remove(id: number) {
-		const user = await this.findOne(id);
+    Object.assign(user, attrs);
+    return this.repo.save(user);
+  }
 
-		if (!user) {
-			throw new Error("User not found");
-		}
+  async remove(id: number) {
+    const user = await this.findOne(id);
 
-		return this.repo.remove(user)
-	}
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return this.repo.remove(user);
+  }
 }

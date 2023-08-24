@@ -1,31 +1,35 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  AfterInsert,
-  AfterRemove, AfterUpdate
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Report {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ default: false })
+  approved: boolean;
+
   @Column()
   price: number;
 
-  @AfterInsert()
-  logInsert() {
-    console.log('Inserted User with', this.id);
-  }
+  @Column()
+  make: string;
 
-  @AfterUpdate()
-  logUpdate() {
-    console.log("Updated User with", this.id);
-  }
+  @Column()
+  model: string;
 
-  @AfterRemove()
-  logRemove() {
-    console.log("Removed User with", this.id);
-  }
+  @Column()
+  year: string;
+
+  @Column()
+  lng: string;
+
+  @Column()
+  lat: number;
+
+  @Column()
+  mileage: string;
+
+  @ManyToOne(() => User, (user) => user.reports)
+  user: User;
 }
